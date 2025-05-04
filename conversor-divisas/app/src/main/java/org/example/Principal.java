@@ -1,14 +1,41 @@
 package org.example;
 
+
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Principal {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        int opcion = 0;
-        Scanner teclado = new Scanner(System.in);
-        Controlador controlador = new Controlador();
 
+    public static String actualCurrency = "";
+    public static String targetCurrency = "";
+
+    public static void main(String[] args) {
+        Controlador controlador = new Controlador();
+        Scanner teclado = new Scanner(System.in);
+
+        int opcion = 0;
+
+        while (opcion != 7) {
+            displayMenu();
+            opcion = teclado.nextInt();
+
+            try {
+                if (choiceMenu(opcion)) {
+                    System.out.println("Ingrese la cantidad de dinero a convertir:");
+                    int numeroIngresado = teclado.nextInt();
+
+                    String message = controlador.realizarConversion(numeroIngresado, actualCurrency, targetCurrency);
+                    System.out.println(message);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void displayMenu() {
         String menu = """
                 ********************************
                 ¡Bienvenido/a al conversor de monedas!
@@ -25,44 +52,40 @@ public class Principal {
                 ********************************
                 """;
 
-        while (opcion != 7) {
-            System.out.println(menu);
-            opcion = teclado.nextInt();
+        System.out.println(menu);
+    }
 
-            if(opcion != 7) {
-                System.out.println("Ingrese la cantidad de dinero a convertir:");
-                int numeroIngresado = teclado.nextInt();
+    public static boolean choiceMenu(int opcion) {
+        switch (opcion) {
+            case 1:
+                actualCurrency = "USD";
+                targetCurrency = "ARS";
+                break;
+            case 2:
+                actualCurrency = "ARS";
+                targetCurrency = "USD";
+                break;
+            case 3:
+                actualCurrency = "USD";
+                targetCurrency = "COP";
+                break;
+            case 4:
+                actualCurrency = "COP";
+                targetCurrency = "USD";
+                break;
+            case 5:
+                actualCurrency = "MXN";
+                targetCurrency = "COP";
+                break;
+            case 6:
+                actualCurrency = "COP";
+                targetCurrency = "MXN";
+                break;
+            default:
+                System.out.println("La opcion seleccionada no es valida.");
+                return false;
 
-                switch (opcion) {
-                    case 1:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "USD", "ARS"));
-                        break;
-
-                    case 2:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "ARS", "USD"));
-                        break;
-
-                    case 3:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "USD", "COP"));
-                        break;
-
-                    case 4:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "COP", "USD"));
-                        break;
-
-                    case 5:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "MXN", "COP"));
-                        break;
-
-                    case 6:
-                        System.out.println(controlador.realizarConversion(numeroIngresado, "COP", "MXN"));
-                        break;
-
-                    default:
-                        System.out.println("Opción no válida. Introduzca una opción del menú.");
-
-                }
-            }
         }
+        return true;
     }
 }
